@@ -1,7 +1,7 @@
 description = """ether-core"""
 
 ext {
-  swtVersion = "4.6"
+  swtVersion = "4.6.1"
   swtArtifactName = "org.eclipse.swt.${swtWindowingLibrary}.${swtPlatform}.${swtArch}"
 }
 
@@ -17,9 +17,8 @@ public String getLwjglArch(String platform) {
 }
 
 ext {
-  //lwjglVersion = "3.0.0b"
-  //lwjglVersion = "3.1.0-SNAPSHOT"
-  lwjglVersion = "3.1.0"
+  //lwjglVersion = "3.1.0"
+  lwjglVersion = "3.1.2-SNAPSHOT"
   lwjglArch = getLwjglArch(System.properties['os.name'])
 }
 
