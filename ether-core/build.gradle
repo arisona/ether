@@ -32,6 +32,7 @@ dependencies {
     compile "org.lwjgl:lwjgl-nanovg:$lwjglVersion"
 
     runtime "org.lwjgl:lwjgl:$lwjglVersion:natives-$lwjglArch"
+    runtime "org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-$lwjglArch"
     runtime "org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-$lwjglArch"
     runtime "org.lwjgl:lwjgl-stb:$lwjglVersion:natives-$lwjglArch"
     runtime "org.lwjgl:lwjgl-nanovg:$lwjglVersion:natives-$lwjglArch"
