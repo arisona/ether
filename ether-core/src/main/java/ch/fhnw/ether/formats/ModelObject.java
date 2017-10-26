@@ -225,4 +225,8 @@ public final class ModelObject {
 		}
 		return meshes;		
 	}
+
+	public void addGroup(ModelGroup g) {
+		groups.add(g);
+	}
 }

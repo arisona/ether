@@ -30,15 +30,15 @@
  */package ch.fhnw.ether.audio.fx;
 
  import ch.fhnw.ether.audio.AudioFrame;
-import ch.fhnw.ether.audio.AudioUtilities;
-import ch.fhnw.ether.audio.ButterworthFilter;
-import ch.fhnw.ether.audio.IAudioRenderTarget;
-import ch.fhnw.ether.audio.Smooth;
-import ch.fhnw.ether.media.AbstractRenderCommand;
-import ch.fhnw.ether.media.RenderCommandException;
-import ch.fhnw.ether.ui.IPlotable;
-import ch.fhnw.util.color.RGB;
-import ch.fhnw.util.math.MathUtilities;
+ import ch.fhnw.ether.audio.AudioUtilities;
+ import ch.fhnw.ether.audio.ButterworthFilter;
+ import ch.fhnw.ether.audio.IAudioRenderTarget;
+ import ch.fhnw.ether.audio.Smooth;
+ import ch.fhnw.ether.media.AbstractRenderCommand;
+ import ch.fhnw.ether.media.RenderCommandException;
+ import ch.fhnw.ether.ui.IPlotable;
+ import ch.fhnw.util.color.RGB;
+ import ch.fhnw.util.math.MathUtilities;
 
  public class BandsButterworth extends AbstractRenderCommand<IAudioRenderTarget> implements IPlotable {
 	 private final int     size;
@@ -52,6 +52,10 @@ import ch.fhnw.util.math.MathUtilities;
 	 private Smooth            smooth;
 	 private float[]           power;
 
+	 public BandsButterworth(int strength, double bandWidthPercent, float ... freqs) {
+		 this(strength, -bandWidthPercent, true, freqs);
+	 }
+
 	 public BandsButterworth(int strength, double bandWidth, boolean centered, float ... freqs) {
 		 this.strength = strength;
 		 if(centered) {
@@ -61,8 +65,9 @@ import ch.fhnw.util.math.MathUtilities;
 			 lowers  = new double[size];
 			 uppers  = new double[size];
 			 for(int i = 0; i < size; i++) {
-				 lowers[i]  = freqs[i] - bandWidth / 2;
-				 uppers[i]  = freqs[i] + bandWidth / 2;
+				 double range = bandWidth < 0 ? freqs[i] * (bandWidth/-100) : bandWidth / 2;
+				 lowers[i]  = freqs[i] - range;
+				 uppers[i]  = freqs[i] + range;
 				 centers[i] = freqs[i];
 				 center[i] = true;
 			 }
@@ -161,9 +166,9 @@ import ch.fhnw.util.math.MathUtilities;
 		 clear();
 		 column(power, 0, 1, RGB.WHITE);
 	 }	
-	 
+
 	 @Override
-	public int getPlotHeight() {
-		return numBands();
-	}
+	 public int getPlotHeight() {
+		 return numBands();
+	 }
  }

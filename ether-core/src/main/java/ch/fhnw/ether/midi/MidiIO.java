@@ -179,5 +179,5 @@ public class MidiIO {
 	public static final float MAX_14BIT = 0x3FFF;
 	public static int toInt14(int nLowerPart, int nHigherPart) {
 		return (nLowerPart & 0x7F) | ((nHigherPart & 0x7F) << 7);
-	}
+	}	
 }

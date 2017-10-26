@@ -80,6 +80,7 @@ public final class ObjWriter {
 			vi[2] = vs.size();
 			g.addFace(new ModelFace(vi, null, null));
 		}
+		object.addGroup(g);
 	}
 
 	public void write() {

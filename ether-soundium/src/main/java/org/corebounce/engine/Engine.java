@@ -126,6 +126,9 @@ public class Engine extends TabPanel implements IOSCHandler, IDisposable {
 				osc.send("/"+BOUNCELET+"s");
 			}
 		}, 1000, POLL_INTERVAL);
+
+		osc.addHandler("/midi", midi);
+		
 		Platform.get().addShutdownDispose(this);
 	}
 
