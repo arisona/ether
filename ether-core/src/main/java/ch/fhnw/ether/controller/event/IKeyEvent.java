@@ -76,6 +76,7 @@ public interface IKeyEvent extends IEvent {
 	int VK_SPACE  = GLFW.GLFW_KEY_SPACE;
 	int VK_Z      = GLFW.GLFW_KEY_Z;
 	int VK_Y      = GLFW.GLFW_KEY_Y;
+	int VK_Q      = GLFW.GLFW_KEY_Q;
 	
 	/**
 	 * Returns keyboard key associated with this event.

@@ -85,17 +85,15 @@ public class DefaultCameraControl {
 		throw new UnsupportedOperationException();
 	}
 
-	// orbiting mode with respect to X-Y plane (keeps target in position)
-
 	/**
-	 * Orbit around target with world-z axis. Positive value orbits
-	 * counter-clock-wise around z axis.
+	 * Orbit around target with camera orbit axis. Positive value orbits
+	 * counter-clock-wise around axis.
 	 * 
 	 * @param delta
 	 *            relative angle in degrees
 	 */
 	public void addToAzimuth(float delta) {
-		Mat4 m = Mat4.multiply(Mat4.translate(camera.getTarget()), Mat4.rotate(delta, Vec3.Z),
+		Mat4 m = Mat4.multiply(Mat4.translate(camera.getTarget()), Mat4.rotate(delta, camera.getCameraOrbitAxis()),
 				Mat4.translate(camera.getTarget().negate()));
 
 		Vec3 p = m.transform(camera.getPosition());

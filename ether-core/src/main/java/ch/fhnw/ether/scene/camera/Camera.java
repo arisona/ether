@@ -45,9 +45,10 @@ public final class Camera implements ICamera {
 
 	private final UpdateRequest update = new UpdateRequest();
 
-	private Vec3 position;
-	private Vec3 target;
-	private Vec3 up;
+	private Vec3  position;
+	private Vec3  target;
+	private Vec3  up;
+	private Vec3  orbit = Vec3.Z;
 
 	private float fov;
 	private float near;
@@ -201,5 +202,16 @@ public final class Camera implements ICamera {
 	
 	private void updateRequest() {
 		update.request();
+	}
+
+	@Override
+	public void setOrbitAxis(Vec3 axis) {
+		this.orbit = axis;
+		updateRequest();
+	}
+
+	@Override
+	public Vec3 getCameraOrbitAxis() {
+		return orbit;
 	}
 }

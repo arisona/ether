@@ -93,6 +93,11 @@ public interface IPointerEvent extends IEvent {
 		public float getScrollY() {
 			return scrollY;
 		}
+		
+		@Override
+		public String toString() {
+			return "("+x+","+y+")("+scrollX+","+scrollY+") "+clickCount + " " + button;
+		}
 	}
 
 	/**

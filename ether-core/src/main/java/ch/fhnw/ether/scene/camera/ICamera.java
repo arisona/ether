@@ -69,6 +69,11 @@ public interface ICamera extends I3DObject {
 	 */
 	void setUp(Vec3 up);
 
+	/**
+	 * Set camera up orbit axis in world coorsinate system.
+	 */
+	void setOrbitAxis(Vec3 axis);
+
 	// projection parameters
 
 	/**
@@ -125,4 +130,9 @@ public interface ICamera extends I3DObject {
 	 * Get camera coordinate system z-axis.
 	 */
 	Vec3 getCameraZAxis();
+
+	/**
+	 * Get camera orbit axis in world coordinate system.
+	 */
+	Vec3 getCameraOrbitAxis();
 }
