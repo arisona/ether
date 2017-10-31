@@ -35,7 +35,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import ch.fhnw.ether.formats.ModelFace;
@@ -47,7 +46,6 @@ import ch.fhnw.util.math.Vec2;
 import ch.fhnw.util.math.Vec3;
 
 public final class ObjWriter {
-	private final List<IMesh> meshes = new ArrayList<>();
 	private final ModelObject object;
 	private final PrintWriter out;
 
@@ -66,7 +64,6 @@ public final class ObjWriter {
 		if (mesh.getType() != Primitive.TRIANGLES)
 			return;
 
-		meshes.add(mesh);
 		ModelGroup g = new ModelGroup(mesh.getName());
 		final List<Vec3> vs = object.getVertices();
 		float[] data = mesh.getTransformedPositionData();
@@ -80,6 +77,18 @@ public final class ObjWriter {
 			vi[2] = vs.size();
 			g.addFace(new ModelFace(vi, null, null));
 		}
+		addGroup(g);
+	}
+
+	public void addV(Vec3 vec) {
+		object.getVertices().add(vec);
+	}
+
+	public void addN(Vec3 vec) {
+		object.getNormals().add(vec);
+	}
+
+	public void addGroup(ModelGroup g) {
 		object.addGroup(g);
 	}
 
