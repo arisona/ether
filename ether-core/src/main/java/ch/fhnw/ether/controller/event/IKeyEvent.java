@@ -72,7 +72,7 @@ public interface IKeyEvent extends IEvent {
 	int VK_END    = GLFW.GLFW_KEY_END;
 	int VK_ENTER  = GLFW.GLFW_KEY_ENTER;
 	int VK_ESCAPE = GLFW.GLFW_KEY_ESCAPE;
-	int VK_DELETE = GLFW.GLFW_KEY_END;
+	int VK_DELETE = GLFW.GLFW_KEY_DELETE;
 	int VK_SPACE  = GLFW.GLFW_KEY_SPACE;
 	int VK_Z      = GLFW.GLFW_KEY_Z;
 	int VK_Y      = GLFW.GLFW_KEY_Y;

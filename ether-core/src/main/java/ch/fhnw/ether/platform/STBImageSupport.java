@@ -31,7 +31,12 @@
 
 package ch.fhnw.ether.platform;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -39,6 +44,8 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+
+import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.stb.STBImage;
@@ -52,6 +59,7 @@ import ch.fhnw.ether.image.IImage.ComponentFormat;
 import ch.fhnw.ether.image.IImage.ComponentType;
 import ch.fhnw.util.ArrayUtilities;
 import ch.fhnw.util.MIME;
+import ch.fhnw.util.TextUtilities;
 
 public class STBImageSupport implements IImageSupport {
 
@@ -65,6 +73,7 @@ public class STBImageSupport implements IImageSupport {
 		return (IGPUImage)read(in, componentType, componentFormat, alphaMode, false);
 	}
 
+	private static boolean ImageIOPlugins;
 	public IImage read(InputStream in, ComponentType componentType, ComponentFormat componentFormat, AlphaMode alphaMode, boolean host) throws IOException {
 		// TODO: Pre-multiplied alpha support
 
@@ -73,6 +82,21 @@ public class STBImageSupport implements IImageSupport {
 
 		int numComponentsRequested = componentFormat != null ? componentFormat.getNumComponents() : 0;
 		byte[] bytes = getBytesFromInputStream(in);
+
+
+		// check for TIFF header and convert TIFF to PNG
+		if((bytes[0]=='I' && bytes[1]=='I') ||
+				(bytes[0]=='M' && bytes[1]=='M')) {
+			if(!(ImageIOPlugins)) {
+				ImageIO.scanForPlugins();
+				ImageIOPlugins = true;
+			}
+			BufferedImage img = ImageIO.read(new ByteArrayInputStream(bytes));
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			ImageIO.write(img, "PNG", out);
+			bytes = out.toByteArray();
+			STBImage.stbi_set_flip_vertically_on_load(false);
+		}
 		ByteBuffer buffer = BufferUtils.createByteBuffer(bytes.length);
 		buffer.put(bytes).flip();
 
