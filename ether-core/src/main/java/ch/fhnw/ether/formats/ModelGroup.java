@@ -33,6 +33,11 @@ package ch.fhnw.ether.formats;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import ch.fhnw.ether.scene.mesh.material.IMaterial;
+import ch.fhnw.ether.scene.mesh.material.ShadedMaterial;
+import ch.fhnw.util.color.RGB;
 
 public final class ModelGroup {
 	private final String name;
@@ -50,6 +55,20 @@ public final class ModelGroup {
 
 	public ModelMaterial getMaterial() {
 		return material;
+	}
+
+	public IMaterial getMaterial(Map<ModelMaterial, IMaterial> cache) {
+		IMaterial result = cache.get(material);
+		if (result == null) {
+			if (material != null) {
+				result = new ShadedMaterial(material.getEmissionColor(), material.getAmbientColor(), material.getDiffuseColor(), material.getSpecularColor(), material.getShininess(), 1, 1, material.getTexture());
+				result.setName(material.getName());
+			} else {
+				result = new ShadedMaterial(RGB.WHITE);
+			}
+			cache.put(material,  result);
+		}
+		return result;
 	}
 
 	public void setMaterial(ModelMaterial material) {

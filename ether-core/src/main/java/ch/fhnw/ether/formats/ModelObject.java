@@ -136,7 +136,7 @@ public final class ModelObject {
 		for (ModelGroup g : groups) {
 			for (ModelFace f : g.getFaces()) {
 				List<Vec2> v = new ArrayList<>();
-				for (int i : f.getNormalIndices()) {
+				for (int i : f.getTexCoordIndices()) {
 					v.add(texCoords.get(i));
 				}
 				vv.add(v);
@@ -219,17 +219,7 @@ public final class ModelObject {
 			if (requestedMaterial != null) {
 				material = requestedMaterial;
 			} else {
-				ModelMaterial mat = group.getMaterial();
-				material = materials.get(mat);
-				if (material == null) {
-					if (mat != null) {
-						material = new ShadedMaterial(mat.getEmissionColor(), mat.getAmbientColor(), mat.getDiffuseColor(), mat.getSpecularColor(), mat.getShininess(), 1, 1, mat.getTexture());
-						material.setName(mat.getName());
-					} else {
-						material = new ShadedMaterial(RGB.WHITE);
-					}
-					materials.put(mat,  material);
-				}
+				material = group.getMaterial(materials);
 			}
 
 			float[] tv = Vec3.toArray(triVertices);
@@ -249,7 +239,7 @@ public final class ModelObject {
 		}
 		return meshes;		
 	}
-
+	
 	public void addGroup(ModelGroup g) {
 		groups.add(g);
 	}
