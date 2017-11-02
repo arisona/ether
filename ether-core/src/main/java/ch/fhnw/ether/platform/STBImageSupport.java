@@ -31,12 +31,11 @@
 
 package ch.fhnw.ether.platform;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -59,7 +58,6 @@ import ch.fhnw.ether.image.IImage.ComponentFormat;
 import ch.fhnw.ether.image.IImage.ComponentType;
 import ch.fhnw.util.ArrayUtilities;
 import ch.fhnw.util.MIME;
-import ch.fhnw.util.TextUtilities;
 
 public class STBImageSupport implements IImageSupport {
 
@@ -73,6 +71,12 @@ public class STBImageSupport implements IImageSupport {
 		return (IGPUImage)read(in, componentType, componentFormat, alphaMode, false);
 	}
 
+	static final ImageObserver OBSERVER = new ImageObserver() {
+		@Override
+		public boolean imageUpdate(java.awt.Image img, int infoflags, int x, int y, int width, int height) {
+			return (infoflags & (ALLBITS | ERROR | ABORT)) == 0;
+		}
+	};
 	private static boolean ImageIOPlugins;
 	public IImage read(InputStream in, ComponentType componentType, ComponentFormat componentFormat, AlphaMode alphaMode, boolean host) throws IOException {
 		// TODO: Pre-multiplied alpha support
@@ -93,9 +97,12 @@ public class STBImageSupport implements IImageSupport {
 			}
 			BufferedImage img = ImageIO.read(new ByteArrayInputStream(bytes));
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			ImageIO.write(img, "PNG", out);
+			BufferedImage dst = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics g = dst.getGraphics();
+			g.drawImage(img, 0, 0, OBSERVER);
+			g.dispose();
+			ImageIO.write(dst, "PNG", out);
 			bytes = out.toByteArray();
-			STBImage.stbi_set_flip_vertically_on_load(false);
 		}
 		ByteBuffer buffer = BufferUtils.createByteBuffer(bytes.length);
 		buffer.put(bytes).flip();

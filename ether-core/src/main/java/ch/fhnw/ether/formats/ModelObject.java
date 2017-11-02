@@ -40,6 +40,7 @@ import java.util.Map;
 
 import ch.fhnw.ether.scene.mesh.DefaultMesh;
 import ch.fhnw.ether.scene.mesh.IMesh;
+import ch.fhnw.ether.scene.mesh.IMesh.Flag;
 import ch.fhnw.ether.scene.mesh.IMesh.Primitive;
 import ch.fhnw.ether.scene.mesh.geometry.DefaultGeometry;
 import ch.fhnw.ether.scene.mesh.geometry.IGeometry;
@@ -89,7 +90,7 @@ public final class ModelObject {
 	public List<ModelGroup> getGroups() {
 		return groups;
 	}
-	
+
 	public Map<String, ModelMaterial> getMaterials() {
 		return materials;
 	}
@@ -143,7 +144,7 @@ public final class ModelObject {
 		}
 		return vv;		
 	}
-	
+
 	public List<IMesh> getMeshes() {
 		return getMeshes(null);
 	}
@@ -156,12 +157,12 @@ public final class ModelObject {
 		List<Vec2> texCoords = getTexCoords();
 
 		Map<ModelMaterial, IMaterial> materials = new IdentityHashMap<>();
-		
+
 		for (ModelGroup group : getGroups()) {
 			List<ModelFace> faces = group.getFaces();
 			if (faces.isEmpty())
 				continue;
-			boolean hasNormals = faces.get(0).getNormalIndices() != null;
+			boolean hasNormals   = faces.get(0).getNormalIndices() != null;
 			boolean hasTexCoords = faces.get(0).getTexCoordIndices() != null;
 
 			List<Vec3> triVertices = new ArrayList<>();
@@ -169,24 +170,47 @@ public final class ModelObject {
 			List<Vec2> triTexCoords = hasTexCoords ? new ArrayList<>() : null;
 
 			for (ModelFace face : group.getFaces()) {
-				final int[] vs = face.getVertexIndices();
-				final int[] ns = face.getNormalIndices();
-				final int[] ts = face.getTexCoordIndices();
+				final int[] vs   = face.getVertexIndices();
+				final int[] ns   = face.getNormalIndices();
+				final int[] ts   = face.getTexCoordIndices();
+				final int[] nmap; 
+				final int[] tmap; 
 
-				List<Vec3> polyVertices = new ArrayList<>();
-				for (int i = 0; i < vs.length; ++i) {
-					polyVertices.add(vertices.get(vs[i]));
-				}
+				if(vs.length == 3) {
+					for (int idx = 0; idx < vs.length; idx++) {
+						triVertices.add(vertices.get(vs[idx]));
+						if (hasNormals)
+							triNormals.add(ns != null ? normals.get(ns[idx]) : Vec3.Z);
+						if (hasTexCoords)
+							triTexCoords.add(ts != null ? texCoords.get(ts[idx]) : Vec2.ZERO);
+					}
+				} else {
+					List<Vec3> polyVertices = new ArrayList<>();
+					for (int i = 0; i < vs.length; ++i)
+						polyVertices.add(vertices.get(vs[i]));
 
-				IntList triangulation = Triangulation.triangulate(Vec3.toArray(polyVertices));
+					if(ns != null) {
+						nmap = new int[vs.length]; 
+						for (int i = 0; i < vs.length; ++i)
+							nmap[i] = ns[i];
+					} else nmap = null;
 
-				for (int i = 0; i < triangulation.size(); ++i) {
-					int idx = triangulation.get(i);
-					triVertices.add(vertices.get(vs[idx]));
-					if (hasNormals)
-						triNormals.add(ns != null ? normals.get(ns[idx]) : Vec3.Z);
-					if (hasTexCoords)
-						triTexCoords.add(ts != null ? texCoords.get(ts[idx]) : Vec2.ZERO);
+					if(ts != null) {
+						tmap = new int[vs.length]; 
+						for (int i = 0; i < vs.length; ++i)
+							tmap[i] = ts[i];
+					} else tmap = null;
+
+					IntList triangulation = Triangulation.triangulate(Vec3.toArray(polyVertices));
+
+					for (int i = 0; i < triangulation.size(); ++i) {
+						int idx = triangulation.get(i);
+						triVertices.add(vertices.get(vs[idx]));
+						if (hasNormals)
+							triNormals.add(ns != null ? normals.get(nmap[idx]) : Vec3.Z);
+						if (hasTexCoords)
+							triTexCoords.add(ts != null ? texCoords.get(tmap[idx]) : Vec2.ZERO);
+					}
 				}
 			}
 
@@ -207,18 +231,18 @@ public final class ModelObject {
 					materials.put(mat,  material);
 				}
 			}
-			
+
 			float[] tv = Vec3.toArray(triVertices);
 			float[] tn = Vec3.toArray(triNormals);
 			float[] tt = Vec2.toArray(triTexCoords);
-			
+
 			IGeometry geometry;
 			if (hasTexCoords)
 				geometry = DefaultGeometry.createVNM(tv, tn, tt);
 			else
 				geometry = DefaultGeometry.createVN(tv, tn);
 
-			DefaultMesh mesh = new DefaultMesh(Primitive.TRIANGLES, material, geometry);
+			DefaultMesh mesh = new DefaultMesh(Primitive.TRIANGLES, material, geometry, Flag.DONT_CULL_FACE);
 			String filename = TextUtilities.getFileName(getResource().getFile());
 			mesh.setName(filename + '/' + group.getName());
 			meshes.add(mesh);

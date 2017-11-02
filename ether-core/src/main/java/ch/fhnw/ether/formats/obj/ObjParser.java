@@ -41,6 +41,7 @@ import ch.fhnw.ether.formats.ModelFace;
 import ch.fhnw.ether.formats.ModelGroup;
 import ch.fhnw.ether.formats.ModelObject;
 import ch.fhnw.util.ArrayUtilities;
+import ch.fhnw.util.IntList;
 import ch.fhnw.util.Log;
 import ch.fhnw.util.TextUtilities;
 import ch.fhnw.util.math.Vec2;
@@ -162,21 +163,20 @@ final class ObjParser {
 
 	private void parseTexCoord(String[] words) {
 		words = expand(words, 3);
-		// obj is upper left, opengl is lower left
 		float u = 0;
 		float v = 0;
 		if (words.length > 1)
 			u = Float.parseFloat(words[1]);
 		if (words.length > 2)
-			v = 1 - Float.parseFloat(words[2]);
+			v = Float.parseFloat(words[2]);
 		object.getTexCoords().add(new Vec2(u, v));
 	}
 
 	private void parseFace(String[] words) {
 		int numVertices = words.length - 1;
-		int[] vIndices = new int[numVertices];
-		int[] nIndices = null;
-		int[] tIndices = null;
+		int[]   vIndices = new int[numVertices];
+		IntList nIndices = new IntList(numVertices);
+		IntList tIndices = new IntList(numVertices);
 
 		int currentTexCoord;
 		for (int i = 0; i < numVertices; ++i) {
@@ -196,25 +196,21 @@ final class ObjParser {
 				// sometimes '1' is put instead blank if there are no texcoords
 				// (v/1/n instead of v//n or v/n)
 				if (currentTexCoord <= object.getTexCoords().size()) {
-					if (tIndices == null)
-						tIndices = new int[numVertices];
-					tIndices[i] = currentTexCoord - 1;
+					tIndices.add(currentTexCoord - 1);
 				}
-				if (tIndices[i] < 0)
-					tIndices[i] = object.getTexCoords().size() + tIndices[i] + 1;
+				if (tIndices.get(i) < 0)
+					tIndices.set(i, object.getTexCoords().size() + tIndices.get(i) + 1);
 			}
 
 			if (indices.length == 2)
 				continue;
 
 			// normal
-			if (nIndices == null)
-				nIndices = new int[numVertices];
-			nIndices[i] = Integer.parseInt(indices[2]) - 1;
-			if (nIndices[i] < 0)
-				nIndices[i] = object.getNormals().size() + nIndices[i] + 1;
+			nIndices.add(Integer.parseInt(indices[2]) - 1);
+			if (nIndices.get(i) < 0)
+				nIndices.set(i, object.getNormals().size() + nIndices.get(i) + 1);
 		}
-		getCurrentGroup().addFace(new ModelFace(vIndices, nIndices, tIndices));
+		getCurrentGroup().addFace(new ModelFace(vIndices, nIndices.isEmpty() ? null : nIndices.toArray(), tIndices.isEmpty() ? null : tIndices.toArray()));
 	}
 
 	private void parseMtllib(String[] words) {

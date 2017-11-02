@@ -75,18 +75,20 @@ public interface IImageSupport {
 	 * Read a host image from input stream.
 	 * 
 	 * @param in
-	 *            the stream to read from
+	 *            the stream to read from.
 	 * @param componentType
-	 *            the requested component type for the image or null for using
+	 *            the requested component type for the image or null for using.
 	 *            the best matching type
 	 * @param componentFormat
 	 *            the requested component format for the image or null for using
-	 *            the best matching format
+	 *            the best matching format.
 	 * @param alphaMode
-	 *            the requested alpha format or null for post multiplied
+	 *            the requested alpha format or null for post multiplied.
+	 * @param flipVertical
+	 * 			flip the image vertically on load.
 	 * @return the loaded image
 	 * @throws IOException
-	 *             if image cannot be read
+	 *             if image cannot be read.
 	 */
 	IHostImage readHost(InputStream in, ComponentType componentType, ComponentFormat componentFormat, AlphaMode alphaMode) throws IOException;
 
