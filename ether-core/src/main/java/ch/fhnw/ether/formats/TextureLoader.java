@@ -32,13 +32,17 @@
 package ch.fhnw.ether.formats;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import ch.fhnw.ether.image.IGPUImage;
+import ch.fhnw.util.Log;
 
 // XXX where should we cache images / textures??? also, images are mutable, so we need to be careful (e.g. cache a copy)
 public final class TextureLoader {
+	private static final Log log = Log.create();
+
 	private TextureLoader() {
 	}
 
@@ -51,9 +55,18 @@ public final class TextureLoader {
 				image = IGPUImage.read(new File(path));
 				IMAGE_CACHE.put(path, image);
 			} catch (Exception e) {
-				System.err.println("can't load texture image: " + path);
+				log.warning("can't load texture image: " + path);
 			}
 		}
 		return image;
+	}
+
+	public static IGPUImage loadTexture(InputStream in) {
+		try {
+			return IGPUImage.read(in);
+		} catch (Exception e) {
+			log.warning("can't load texture image");
+			return null;
+		}
 	}
 }

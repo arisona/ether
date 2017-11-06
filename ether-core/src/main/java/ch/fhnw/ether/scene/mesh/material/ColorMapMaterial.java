@@ -66,6 +66,7 @@ public final class ColorMapMaterial extends AbstractMaterial {
 
 	public void setColor(RGBA color) {
 		this.color = color;
+		updateRequest();
 	}
 
 	public IGPUImage getColorMap() {
