@@ -138,10 +138,10 @@ public final class ShaderBuilder {
 		case TRIANGLE_STRIP:
 		case TRIANGLE_FAN:
 			if (material instanceof ColorMaterial || material instanceof ColorMapMaterial) {
-				return new UnshadedTriangleShader(attributes);
+				return new UnshadedTriangleShader(attributes, mesh.getType());
 			} else if (material instanceof ShadedMaterial) {
 				//return new FlatShadedTriangleShader(attributes);
-				return new FragmentShadedTriangleShader(attributes);
+				return new FragmentShadedTriangleShader(attributes, mesh.getType());
 			}
 		}
 		throw new UnsupportedOperationException("cant create shader for mesh: " + mesh);

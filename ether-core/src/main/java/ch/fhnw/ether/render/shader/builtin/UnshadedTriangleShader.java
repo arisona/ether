@@ -49,8 +49,8 @@ import ch.fhnw.ether.scene.mesh.material.IMaterial;
 import ch.fhnw.util.color.RGBA;
 
 public class UnshadedTriangleShader extends AbstractShader {
-	public UnshadedTriangleShader(Collection<IAttribute> attributes) {
-		super(IShader.class, "builtin.shader.unshaded_triangles", "/shaders/unshaded_vct", Primitive.TRIANGLES);
+	public UnshadedTriangleShader(Collection<IAttribute> attributes, Primitive primitive) {
+		super(IShader.class, "builtin.shader.unshaded_triangles", "/shaders/unshaded_vct", primitive);
 
 		boolean useVertexColors = attributes.contains(IGeometry.COLOR_ARRAY);
 		boolean useTexture = attributes.contains(IGeometry.COLOR_MAP_ARRAY);

@@ -120,7 +120,7 @@ public abstract class AbstractShader implements IShader {
 	public final void render(IVertexBuffer buffer) {
 		buffer.bind();
 		arrays.forEach(attr -> attr.enable(program, buffer));
-
+				
 		int mode = MODE[type.ordinal()];
 		GL11.glDrawArrays(mode, 0, buffer.getNumVertices());
 
