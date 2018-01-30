@@ -488,7 +488,7 @@ final class GLFWWindow implements IWindow {
 			if (action == GLFW.GLFW_PRESS || action == GLFW.GLFW_REPEAT) {
 				pointerButtons |= mask;
 				if (pointerListener != null)
-					pointerListener.pointerPressed(GLFWWindow.this, modifiers, pointerPosition, button);
+					pointerListener.pointerPressed(GLFWWindow.this, modifiers, pointerPosition, button, action == GLFW.GLFW_REPEAT);
 			} else if (action == GLFW.GLFW_RELEASE) {
 				pointerButtons &= ~mask;
 				if (pointerListener != null)

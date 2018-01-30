@@ -196,8 +196,8 @@ public class DefaultView implements IView {
 		}
 
 		@Override
-		public void pointerPressed(IWindow window, int mods, Vec2 position, int button) {
-			runOnSceneThread(time -> controller.pointerPressed(ptre(mods, position, Vec2.ZERO, button, 1)));
+		public void pointerPressed(IWindow window, int mods, Vec2 position, int button, boolean repeat) {
+			runOnSceneThread(time -> controller.pointerPressed(ptre(mods, position, Vec2.ZERO, button, repeat ? 2 : 1)));
 		}
 
 		@Override

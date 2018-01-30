@@ -68,6 +68,9 @@ final class ViewCameraState implements IViewCameraState {
 		this.fov = camera.getFov();
 		this.near = camera.getNear();
 		this.far = camera.getFar();
+		if(camera instanceof IProjectionMatrixProvider) {
+			this.projMatrix = ((IProjectionMatrixProvider)camera).getProjectioMatrix();
+		}
 	}
 
 	public ViewCameraState(IView view, Mat4 viewMatrix, Mat4 projMatrix) {

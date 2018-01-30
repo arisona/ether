@@ -35,7 +35,7 @@ import ch.fhnw.util.UpdateRequest;
 import ch.fhnw.util.math.Vec3;
 import ch.fhnw.util.math.geometry.BoundingBox;
 
-public final class Camera implements ICamera {
+public class Camera implements ICamera {
 	private static final Vec3 DEFAULT_POSITION = new Vec3(0, -5, 0);
 	private static final Vec3 DEFAULT_TARGET = Vec3.ZERO;
 	private static final Vec3 DEFAULT_UP = Vec3.Z;

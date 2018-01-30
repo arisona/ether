@@ -83,7 +83,7 @@ public interface IWindow extends IDisposable {
 
 		void pointerExited(IWindow window, int mods, Vec2 position);
 
-		void pointerPressed(IWindow window, int mods, Vec2 position, int button);
+		void pointerPressed(IWindow window, int mods, Vec2 position, int button, boolean repeat);
 
 		void pointerReleased(IWindow window, int mods, Vec2 position, int button);
 
@@ -111,7 +111,7 @@ public interface IWindow extends IDisposable {
 	class PointerAdapter implements IPointerListener {
 		@Override public void pointerEntered(IWindow window, int mods, Vec2 position) {}
 		@Override public void pointerExited(IWindow window, int mods, Vec2 position) {}
-		@Override public void pointerPressed(IWindow window, int mods, Vec2 position, int button) {}
+		@Override public void pointerPressed(IWindow window, int mods, Vec2 position, int button, boolean repeat) {}
 		@Override public void pointerReleased(IWindow window, int mods, Vec2 position, int button) {}
 		@Override public void pointerClicked(IWindow window, int mods, Vec2 position, int button) {}
 		@Override public void pointerMoved(IWindow window, int mods, Vec2 position) {}
