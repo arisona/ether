@@ -192,7 +192,7 @@ public class NavigationTool extends AbstractTool {
 		getController().viewChanged(e.getView());
 	}
 
-	private static IMesh makeGrid() {
+	protected IMesh makeGrid() {
 		List<Vec3> lines = new ArrayList<>();
 
 		int gridNumLines = 12;
@@ -215,7 +215,7 @@ public class NavigationTool extends AbstractTool {
 		return new DefaultMesh(Primitive.LINES, new LineMaterial(RGBA.GRAY), DefaultGeometry.createV(Vec3.toArray(lines)), Queue.TRANSPARENCY);
 	}
 	
-	private static IMesh makeAxes() {
+	protected IMesh makeAxes() {
 		float[] lines = {
 			0, 0, 0, 1, 0, 0, 
 			0, 0, 0, 0, 1, 0,

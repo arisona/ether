@@ -94,9 +94,13 @@ public class DefaultController implements IController {
 		this.renderManager = new DefaultRenderManager(this, renderer);
 		this.scheduler = new DefaultEventScheduler(() -> renderManager.update(), fps);
 		run(time -> {
-			this.tool = new NavigationTool(this, new PickTool(this));
+			this.tool = createDefaultTool();
 		});
 		currentView = null;
+	}
+
+	protected ITool createDefaultTool() {
+		return new NavigationTool(this, new PickTool(this));
 	}
 
 	@Override
