@@ -35,19 +35,23 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.util.List;
 
 import ch.fhnw.ether.formats.ModelFace;
 import ch.fhnw.ether.formats.ModelGroup;
 import ch.fhnw.ether.formats.ModelObject;
 import ch.fhnw.ether.scene.mesh.IMesh;
 import ch.fhnw.ether.scene.mesh.IMesh.Primitive;
+import ch.fhnw.ether.scene.mesh.material.ColorMapMaterial;
+import ch.fhnw.ether.scene.mesh.material.ColorMaterial;
+import ch.fhnw.ether.scene.mesh.material.IMaterial;
+import ch.fhnw.util.TextUtilities;
 import ch.fhnw.util.math.Vec2;
 import ch.fhnw.util.math.Vec3;
 
 public final class ObjWriter {
 	private final ModelObject object;
 	private final PrintWriter out;
+	private final PrintWriter mtl;
 
 	public ObjWriter(File file) throws FileNotFoundException {
 		URL resource = null;
@@ -56,7 +60,8 @@ public final class ObjWriter {
 		} catch (Exception e) {
 		}
 		object = new ModelObject(resource);
-		out = new PrintWriter(file);
+		out    = new PrintWriter(file);
+		mtl    = new PrintWriter(TextUtilities.getFileNameWithoutExtension(file) + ".mtl");
 	}
 
 	// TODO: normal, texcoord, material handling
@@ -65,19 +70,31 @@ public final class ObjWriter {
 			return;
 
 		ModelGroup g = new ModelGroup(mesh.getName());
-		final List<Vec3> vs = object.getVertices();
+		
+		writeMaterial(mesh.getMaterial());
+				
 		float[] data = mesh.getTransformedPositionData();
-		for (int i = 0; i < data.length; i += 9) {
-			int[] vi = new int[3];
-			vs.add(new Vec3(data[i + 0], data[i + 1], data[i + 2]));
-			vi[0] = vs.size();
-			vs.add(new Vec3(data[i + 3], data[i + 4], data[i + 5]));
-			vi[1] = vs.size();
-			vs.add(new Vec3(data[i + 6], data[i + 7], data[i + 8]));
-			vi[2] = vs.size();
-			g.addFace(new ModelFace(vi, null, null));
+		
+		int vidx = 0;
+		boolean hasTextures = mesh.getMaterial() instanceof ColorMapMaterial;
+		int[] vi = new int[3];
+		for (int i = 0; i < data.length; i += 9) {			
+			vi[0] = vidx++;
+			vi[1] = vidx++;
+			vi[2] = vidx++;
+			g.addFace(new ModelFace(vi, null, hasTextures ? vi : null));
 		}
 		addGroup(g);
+	}
+
+	private void writeMaterial(IMaterial material) {
+		// TODO write material to mtl file
+		mtl.println("newmtl Material_" + material.getName());
+		if(material instanceof ColorMapMaterial) {
+			//....
+		} else if(material instanceof ColorMaterial) {
+			//....
+		}
 	}
 
 	public void addV(Vec3 vec) {
@@ -102,6 +119,7 @@ public final class ObjWriter {
 		for (ModelGroup g : object.getGroups())
 			writeGroup(g, out);
 		out.close();
+		mtl.close();
 	}
 
 	private void writeGroup(ModelGroup group, PrintWriter out) {
