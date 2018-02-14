@@ -44,9 +44,12 @@ public final class ModelGroup {
 	private final List<ModelFace> faces = new ArrayList<>();
 
 	private ModelMaterial material;
+	private int           vertexCount;
+	private int           normalCount;
+	private int           uvCount;
 	
 	public ModelGroup(String name) {
-		this.name = name;
+		this.name        = name;
 	}
 
 	public String getName() {
@@ -81,5 +84,23 @@ public final class ModelGroup {
 
 	public void addFace(ModelFace face) {
 		faces.add(face);
+	}
+	
+	public int getNormalCount() {
+		return normalCount;
+	}
+	
+	public int getVertexCount() {
+		return vertexCount;
+	}
+	
+	public int getUVCount() {
+		return uvCount;
+	}
+
+	public void setCounts(int vertexCount, int normalCount, int uvCount) {
+		this.vertexCount = vertexCount;
+		this.normalCount = normalCount;
+		this.uvCount     = uvCount;		
 	}
 }
