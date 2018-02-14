@@ -91,19 +91,17 @@ public final class ObjWriter {
 	}
 
 	private void writeMaterial(IMaterial material) {
-		// TODO write material to mtl file
 		mtl.println("newmtl Material_" + material.getName());
-		mtl.println("illum 4");
-		mtl.println("Ka 0.00 0.00 0.00");
-		mtl.println("Kd 1.00 1.00 1.00");
-		mtl.println("Ks 0.00 0.00 0.00");
-		mtl.println("Tf 1.00 1.00 1.00");
-		mtl.println("Ni 1.00");
-		mtl.println("map_Kd " + material.getName() + ".png");
 		if(material instanceof ColorMapMaterial) {
-			//....
+			mtl.println("illum 4");
+			mtl.println("Ka 0.00 0.00 0.00");
+			mtl.println("Kd 1.00 1.00 1.00");
+			mtl.println("Ks 0.00 0.00 0.00");
+			mtl.println("Tf 1.00 1.00 1.00");
+			mtl.println("Ni 1.00");
+			mtl.println("map_Kd " + material.getName() + ".png");
 		} else if(material instanceof ColorMaterial) {
-			//....
+			//.... add color material support
 		}
 	}
 
