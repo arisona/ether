@@ -35,6 +35,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 
 import ch.fhnw.ether.formats.ModelFace;
 import ch.fhnw.ether.formats.ModelGroup;
@@ -52,7 +54,8 @@ public final class ObjWriter {
 	private final ModelObject object;
 	private final PrintWriter out;
 	private final PrintWriter mtl;
-
+	private final Set<String> materials = new HashSet<>();
+	
 	public ObjWriter(File file) throws FileNotFoundException {
 		URL resource = null;
 		try {
@@ -64,17 +67,17 @@ public final class ObjWriter {
 		mtl    = new PrintWriter(TextUtilities.getFileNameWithoutExtension(file) + ".mtl");
 	}
 
-	// TODO: normal, texcoord, material handling
 	public void addMesh(IMesh mesh) {
 		if (mesh.getType() != Primitive.TRIANGLES)
 			return;
 
 		ModelGroup g = new ModelGroup(mesh.getName());
-		
-		writeMaterial(mesh.getMaterial());
-				
+
+		if(materials.add(mesh.getMaterial().getName()))
+			writeMaterial(mesh.getMaterial());
+
 		float[] data = mesh.getTransformedPositionData();
-		
+
 		int vidx = 0;
 		boolean hasTextures = mesh.getMaterial() instanceof ColorMapMaterial;
 		int[] vi = new int[3];
@@ -90,6 +93,13 @@ public final class ObjWriter {
 	private void writeMaterial(IMaterial material) {
 		// TODO write material to mtl file
 		mtl.println("newmtl Material_" + material.getName());
+		mtl.println("illum 4");
+		mtl.println("Ka 0.00 0.00 0.00");
+		mtl.println("Kd 1.00 1.00 1.00");
+		mtl.println("Ks 0.00 0.00 0.00");
+		mtl.println("Tf 1.00 1.00 1.00");
+		mtl.println("Ni 1.00");
+		mtl.println("map_Kd " + material.getName() + ".png");
 		if(material instanceof ColorMapMaterial) {
 			//....
 		} else if(material instanceof ColorMaterial) {
@@ -124,6 +134,7 @@ public final class ObjWriter {
 
 	private void writeGroup(ModelGroup group, PrintWriter out) {
 		out.println("g " + group.getName());
+		out.println("usmtl Material_" + group.getName());
 		for (ModelFace f : group.getFaces())
 			writeFace(f, out);
 	}
